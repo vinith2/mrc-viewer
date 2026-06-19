@@ -5,6 +5,12 @@ Open a `.mrc`, `.map`, `.mrcs`, or `.ccp4` file and it renders in a custom edito
 
 It's meant as a **minimal, drop-in replacement for ChimeraX and IMOD (`3dmod`) for quick checks** — eyeball a map, scrub through slices, or check a contour level right inside your editor, without launching the full desktop tools. It is *not* a replacement for their full analysis, segmentation, or model-building features.
 
+## Demo
+
+<video src="https://github.com/vinith2/mrc-viewer/raw/main/images/demo.mp4" controls muted width="100%"></video>
+
+> If the video does not play inline, [watch it here](https://github.com/vinith2/mrc-viewer/raw/main/images/demo.mp4).
+
 ## Installation
 
 The extension is distributed as a `.vsix` file. To install it in VS Code:

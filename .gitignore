@@ -6,3 +6,7 @@ node_modules
 
 # Claude Code tooling config
 .claude/
+
+# demo source recording (keep the converted images/demo.mp4 instead)
+screen-record.mov
+*.mov
