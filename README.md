@@ -1,6 +1,9 @@
 # mrc-viewer
 
-A VS Code extension for viewing **MRC / CCP4 cryo-EM volume maps** directly from your workspace — no need to upload to a web service. Open a `.mrc`, `.map`, `.mrcs`, or `.ccp4` file and it renders in a custom editor with both 2D slice navigation and an interactive 3D isosurface (powered by [Mol*](https://molstar.org/)), similar to the EMDB [3D view](https://www.ebi.ac.uk/emdb/).
+A VS Code extension for viewing **MRC / CCP4 cryo-EM volume maps** directly from your workspace.
+Open a `.mrc`, `.map`, `.mrcs`, or `.ccp4` file and it renders in a custom editor with both 2D slice navigation and an interactive 3D isosurface (powered by [Mol*](https://molstar.org/)), similar to the EMDB [3D view](https://www.ebi.ac.uk/emdb/).
+
+It's meant as a **minimal, drop-in replacement for ChimeraX and IMOD (`3dmod`) for quick checks** — eyeball a map, scrub through slices, or check a contour level right inside your editor, without launching the full desktop tools. It is *not* a replacement for their full analysis, segmentation, or model-building features.
 
 ## Installation
 
