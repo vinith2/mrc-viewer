@@ -2,6 +2,24 @@
 
 A VS Code extension for viewing **MRC / CCP4 cryo-EM volume maps** directly from your workspace — no need to upload to a web service. Open a `.mrc`, `.map`, `.mrcs`, or `.ccp4` file and it renders in a custom editor with both 2D slice navigation and an interactive 3D isosurface (powered by [Mol*](https://molstar.org/)), similar to the EMDB [3D view](https://www.ebi.ac.uk/emdb/).
 
+## Installation
+
+The extension is distributed as a `.vsix` file. To install it in VS Code:
+
+1. Download the latest `mrc-viewer-<version>.vsix` from the [Releases page](https://github.com/vinith2/mrc-viewer/releases).
+2. In VS Code, open the **Extensions** view (`Cmd+Shift+X` / `Ctrl+Shift+X`).
+3. Click the **`···`** menu at the top of the Extensions panel → **Install from VSIX…**
+4. Select the downloaded `.vsix` file.
+5. Reload VS Code if prompted.
+
+Or, from a terminal:
+
+```bash
+code --install-extension mrc-viewer-<version>.vsix
+```
+
+Once installed, just open any `.mrc`, `.map`, `.mrcs`, or `.ccp4` file from the Explorer — it opens in the viewer automatically.
+
 ## Features
 
 Opening a supported file shows a viewer with two tabs:
