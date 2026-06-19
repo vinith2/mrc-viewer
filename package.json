@@ -3,6 +3,11 @@
   "displayName": "mrc-viewer",
   "description": "MRC volume viewer for cryo-EM",
   "version": "0.0.1",
+  "publisher": "vinith2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinith2/mrc-viewer.git"
+  },
   "engines": {
     "vscode": "^1.125.0"
   },
@@ -49,10 +54,8 @@
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.39.3",
+    "molstar": "^5.10.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
-  },
-  "dependencies": {
-    "molstar": "^5.10.1"
   }
 }
