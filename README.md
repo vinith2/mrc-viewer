@@ -1,71 +1,63 @@
-# mrc-viewer README
+# mrc-viewer
 
-This is the README for your extension "mrc-viewer". After writing up a brief description, we recommend including the following sections.
+A VS Code extension for viewing **MRC / CCP4 cryo-EM volume maps** directly from your workspace — no need to upload to a web service. Open a `.mrc`, `.map`, `.mrcs`, or `.ccp4` file and it renders in a custom editor with both 2D slice navigation and an interactive 3D isosurface (powered by [Mol*](https://molstar.org/)), similar to the EMDB [3D view](https://www.ebi.ac.uk/emdb/).
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Opening a supported file shows a viewer with two tabs:
 
-For example if there is an image subfolder under your extension project workspace:
+### Slices
+A linked orthogonal slice view (XY / XZ / YZ), like a medical-imaging orthoview:
 
-\!\[feature X\]\(images/feature-x.png\)
+- A slider per axis to scrub through Z, Y, and X.
+- A **crosshair** linking the three panes — click anywhere in one pane and the other two recenter on that point.
+- **Window / Level** contrast controls, **Auto** contrast, and **Invert**.
+- **Max projection** (MIP) toggle per axis.
+- A readout of volume dimensions, data mode, density range, and cell size (Å/voxel).
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### 3D Isosurface
+A GPU-rendered isosurface via Mol\*, with a minimal, ChimeraX-style control set:
+
+- **Surface level** — slider across the map's density range (defaults to ~1σ above the mean).
+- **Opacity**.
+- **Surface color**.
+- **Reset view**, plus mouse orbit / zoom / pan.
+
+## Supported formats
+
+MRC2014 / CCP4 maps with extensions `.mrc`, `.mrcs`, `.map`, `.ccp4`. Data modes 0 (int8), 1 (int16), 2 (float32), 6 (uint16), and 12 (float16) are supported; endianness is auto-detected. (Complex modes 3/4 are not handled.)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+None beyond VS Code `^1.125.0`. Mol\* is bundled with the extension — nothing to install and no network access required.
 
-## Extension Settings
+## Development
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+```bash
+npm install
+npm run compile      # or: npm run watch
+```
 
-For example:
+Press **F5** to launch an Extension Development Host, then open a `.mrc`/`.map` file from the Explorer.
 
-This extension contributes the following settings:
+```bash
+npm test             # run the extension test suite
+npm run lint
+```
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## How it works
 
-## Known Issues
+- The MRC binary is parsed in the extension host ([src/mrc.ts](src/mrc.ts)) and rendered as 2D slices on a canvas ([media/viewer.js](media/viewer.js)).
+- The 3D tab hands the raw file bytes to a bundled Mol\* viewer ([media/molstar/](media/molstar/)) and drives its volume isosurface representation directly, exposing only the surface level / opacity / color controls.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Known limitations
+
+- Complex-valued MRC modes (3, 4) are not supported.
+- Very large maps are rendered at full resolution (no data subsampling / "step" control yet); extremely large volumes may be slow to re-contour.
+- The 3D view requires `'unsafe-eval'` in the webview Content Security Policy, which Mol*'s prebuilt bundle needs. This is scoped to the viewer webview, which only ever loads the bundled local assets and the opened file.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release: MRC/CCP4 custom editor with linked 2D orthoview slices and a Mol\*-powered 3D isosurface.
