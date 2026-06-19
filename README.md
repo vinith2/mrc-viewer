@@ -55,7 +55,7 @@ MRC2014 / CCP4 maps with extensions `.mrc`, `.mrcs`, `.map`, `.ccp4`. Data modes
 
 ## Requirements
 
-None beyond VS Code `^1.125.0`. Mol\* is bundled with the extension — nothing to install and no network access required.
+VS Code `1.74.0` or newer. Mol\* is bundled with the extension — nothing to install and no network access required.
 
 ## Development
 
