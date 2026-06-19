@@ -9,7 +9,6 @@ It's meant as a **minimal, drop-in replacement for ChimeraX and IMOD (`3dmod`) f
 
 ![mrc-viewer demo](https://raw.githubusercontent.com/vinith2/mrc-viewer/main/images/demo.gif)
 
-> The clip above is sped up. For the full-quality recording, [watch the MP4](https://github.com/vinith2/mrc-viewer/raw/main/images/demo.mp4).
 
 ## Installation
 
