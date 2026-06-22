@@ -127,6 +127,7 @@ export class MrcEditorProvider implements vscode.CustomReadonlyEditorProvider {
 				<input type="range" id="window" min="1" max="1000" value="1000">
 				<button id="auto">Auto</button>
 				<button id="invert">Invert</button>
+				<button id="resetZoom">Reset zoom</button>
 			</div>
 		</div>
 		<div id="grid">

@@ -148,6 +148,7 @@ button:hover {
 }
 
 .canvas-wrap {
+	position: relative;
 	flex: 1;
 	display: flex;
 	align-items: center;

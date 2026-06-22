@@ -18,6 +18,7 @@
 	const windowEl = /** @type {HTMLInputElement} */ (document.getElementById('window'));
 	const autoBtn = document.getElementById('auto');
 	const invertBtn = document.getElementById('invert');
+	const resetZoomBtn = document.getElementById('resetZoom');
 	const infoEl = document.getElementById('info');
 
 	const MODE_NAMES = { 0: 'int8', 1: 'int16', 2: 'float32', 6: 'uint16', 12: 'float16' };
@@ -67,9 +68,94 @@
 		setupSlider('z', vol.nz);
 		setupSlider('y', vol.ny);
 		setupSlider('x', vol.nx);
+		initZoom('z');
+		initZoom('y');
+		initZoom('x');
 		autoContrast();
 		renderAll();
 		showInfo();
+	}
+
+	// Scroll-to-zoom per pane, centered on the cursor. Purely visual: we apply
+	// a CSS transform to the canvas, so the rendered pixels (and crosshair
+	// click mapping, which reads the transformed bounding rect) stay correct.
+	const zoomState = { x: { s: 1, tx: 0, ty: 0 }, y: { s: 1, tx: 0, ty: 0 }, z: { s: 1, tx: 0, ty: 0 } };
+
+	// Reset all three panes back to the fit (1x) view.
+	function resetZoom() {
+		for (const axis of ['x', 'y', 'z']) {
+			const z = zoomState[axis];
+			z.s = 1; z.tx = 0; z.ty = 0;
+			const c = PANES[axis].canvas;
+			c.style.transform = 'translate(0px, 0px) scale(1)';
+			c.style.cursor = 'crosshair';
+		}
+	}
+
+	function initZoom(axis) {
+		const canvas = PANES[axis].canvas;
+		const wrap = canvas.parentElement;
+		const z = zoomState[axis];
+		if (z.bound) { return; } // attach listeners only once
+		z.bound = true;
+
+		const apply = () => {
+			canvas.style.transformOrigin = '0 0';
+			canvas.style.transform = `translate(${z.tx}px, ${z.ty}px) scale(${z.s})`;
+			canvas.style.cursor = z.s > 1 ? (drag && drag.moved ? 'grabbing' : 'grab') : 'crosshair';
+		};
+
+		// Keep the panned image from being dragged entirely off-screen.
+		const clampPan = () => {
+			const W = wrap.clientWidth, H = wrap.clientHeight;
+			const sw = z.s * canvas.offsetWidth, sh = z.s * canvas.offsetHeight;
+			const ax = -canvas.offsetLeft, bx = W - sw - canvas.offsetLeft;
+			const ay = -canvas.offsetTop, by = H - sh - canvas.offsetTop;
+			z.tx = Math.min(Math.max(z.tx, Math.min(ax, bx)), Math.max(ax, bx));
+			z.ty = Math.min(Math.max(z.ty, Math.min(ay, by)), Math.max(ay, by));
+		};
+
+		wrap.addEventListener('wheel', (e) => {
+			e.preventDefault();
+			const wrapRect = wrap.getBoundingClientRect();
+			// Cursor relative to the canvas's untransformed layout box.
+			const qx = (e.clientX - wrapRect.left) - canvas.offsetLeft;
+			const qy = (e.clientY - wrapRect.top) - canvas.offsetTop;
+			const ns = Math.max(1, Math.min(16, z.s * (e.deltaY < 0 ? 1.1 : 1 / 1.1)));
+			const f = ns / z.s;
+			z.tx = qx - f * (qx - z.tx);
+			z.ty = qy - f * (qy - z.ty);
+			z.s = ns;
+			if (z.s <= 1.0001) { z.s = 1; z.tx = 0; z.ty = 0; } // snap back to fit
+			else { clampPan(); }
+			apply();
+		}, { passive: false });
+
+		// Click vs. drag: a plain click (no movement) sets the crosshair; a drag
+		// while zoomed in pans the image.
+		let drag = null;
+		canvas.addEventListener('mousedown', (e) => {
+			if (e.button !== 0) { return; }
+			drag = { x0: e.clientX, y0: e.clientY, tx0: z.tx, ty0: z.ty, moved: false };
+		});
+		window.addEventListener('mousemove', (e) => {
+			if (!drag) { return; }
+			const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+			if (!drag.moved && Math.hypot(dx, dy) > 3) { drag.moved = true; }
+			if (drag.moved && z.s > 1) {
+				z.tx = drag.tx0 + dx;
+				z.ty = drag.ty0 + dy;
+				clampPan();
+				apply();
+			}
+		});
+		window.addEventListener('mouseup', (e) => {
+			if (!drag) { return; }
+			const wasClick = !drag.moved;
+			drag = null;
+			apply(); // restore grab/crosshair cursor
+			if (wasClick) { onPaneClick(axis, e); } // plain click -> move crosshair
+		});
 	}
 
 	function setupSlider(axis, n) {
@@ -82,7 +168,7 @@
 			p.label.textContent = p.slider.value;
 			renderAll();
 		});
-		p.canvas.addEventListener('click', (ev) => onPaneClick(axis, ev));
+		// Crosshair-on-click and drag-to-pan are wired up in initZoom().
 	}
 
 	// ---- contrast (window / level) ----
@@ -231,6 +317,7 @@
 	windowEl.addEventListener('input', renderAll);
 	autoBtn.addEventListener('click', () => { autoContrast(); renderAll(); });
 	invertBtn.addEventListener('click', () => { invert = !invert; renderAll(); });
+	resetZoomBtn.addEventListener('click', resetZoom);
 
 	// ---- 3D isosurface tab (Mol*, minimal ChimeraX-style controls) ----
 	const tabSlices = document.getElementById('tabSlices');
