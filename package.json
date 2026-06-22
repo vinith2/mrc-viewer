@@ -2,7 +2,7 @@
   "name": "mrc-viewer",
   "displayName": "mrc-viewer",
   "description": "MRC volume viewer for cryo-EM",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "vinith2",
   "repository": {
     "type": "git",
